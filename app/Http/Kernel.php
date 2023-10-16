@@ -2,6 +2,8 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\ProjectBoardMiddleware;
+use App\Http\Middleware\ProjectOwnershipMiddleware;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -64,5 +66,10 @@ class Kernel extends HttpKernel
         'signed' => \App\Http\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \App\Http\Middleware\EnsureEmailIsVerified::class,
+    ];
+
+    protected $routeMiddleware = [
+        'project.owner' => ProjectOwnershipMiddleware::class,
+        'project.board' => ProjectBoardMiddleware::class,
     ];
 }
