@@ -18,5 +18,24 @@ class DatabaseSeeder extends Seeder
              'name' => 'Test User',
              'email' => 'test@example.com',
          ]);
+        \App\Models\User::factory()->create([
+            'name' => 'Second Test User',
+            'email' => 'test2@example.com',
+        ]);
+
+        // Public projects to Test User 1
+        \App\Models\Project::factory()->create([]);
+        \App\Models\Project::factory()->create([]);
+
+         // Public project to Test User 2
+        \App\Models\Project::factory()->create([
+            'user_id' => 2,
+        ]);
+
+        // Private project to Test User 2
+        \App\Models\Project::factory()->create([
+            'user_id' => 2,
+            'is_public' => false,
+        ]);
     }
 }

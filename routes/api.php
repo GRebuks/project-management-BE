@@ -26,6 +26,7 @@ Route::group([
         // Projects API resource & routes
         Route::apiResource('projects', ProjectController::class);
         Route::get('/users/{user_id}/projects', [ProjectController::class, 'getUserProjects']);
+        Route::get('/public-projects', [ProjectController::class, 'allPublicProjects']);
 
         // Boards API resource & routes
         Route::middleware(['project.board'])->group(function () {

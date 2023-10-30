@@ -15,8 +15,11 @@ class ProjectController extends Controller
     // API Resources
     public function index(): AnonymousResourceCollection
     {
-        return ProjectResource::collection(Project::where('is_public', true)->get());
+        $user = auth()->user();
+        $userProjects = $user->projects;
+        return ProjectResource::collection($userProjects);
     }
+
 
     public function store(ProjectRequest $request): ProjectResource
     {
@@ -64,5 +67,10 @@ class ProjectController extends Controller
         }
 
         return ProjectResource::collection($projects);
+    }
+
+    public function allPublicProjects(): AnonymousResourceCollection
+    {
+        return ProjectResource::collection(Project::where('is_public', true)->get());
     }
 }
