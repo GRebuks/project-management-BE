@@ -4,26 +4,26 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Board extends Model
+class Workspace extends Model
 {
     use HasFactory;
+
     protected $fillable = [
         'title',
         'description',
         'color',
-        'workspace_id',
     ];
 
-    public function workspace(): BelongsTo
+    public function boards(): HasMany
     {
-        return $this->belongsTo(Workspace::class);
+        return $this->hasMany(Board::class);
     }
 
-    public function boardColumns(): HasMany
+    public function users(): BelongsToMany
     {
-        return $this->hasMany(BoardColumn::class);
+        return $this->belongsToMany(User::class, 'user_workspace');
     }
 }

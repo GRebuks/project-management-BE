@@ -2,8 +2,10 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\BoardWorkspaceMiddleware;
 use App\Http\Middleware\ProjectBoardMiddleware;
 use App\Http\Middleware\ProjectOwnershipMiddleware;
+use App\Http\Middleware\WorkspaceMiddleware;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -23,6 +25,8 @@ class Kernel extends HttpKernel
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
         \App\Http\Middleware\TrimStrings::class,
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
+        BoardWorkspaceMiddleware::class,
+        WorkspaceMiddleware::class,
     ];
 
     /**
@@ -69,7 +73,7 @@ class Kernel extends HttpKernel
     ];
 
     protected $routeMiddleware = [
-        'project.owner' => ProjectOwnershipMiddleware::class,
-        'project.board' => ProjectBoardMiddleware::class,
+        'workspace.board' => BoardWorkspaceMiddleware::class,
+        'workspace.user' => WorkspaceMiddleware::class,
     ];
 }

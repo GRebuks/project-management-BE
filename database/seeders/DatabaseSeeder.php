@@ -3,6 +3,8 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\User;
+use App\Models\Workspace;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -14,28 +16,19 @@ class DatabaseSeeder extends Seeder
     {
         // \App\Models\User::factory(10)->create();
 
-         \App\Models\User::factory()->create([
-             'name' => 'Test User',
-             'email' => 'test@example.com',
-         ]);
-        \App\Models\User::factory()->create([
-            'name' => 'Second Test User',
-            'email' => 'test2@example.com',
+        User::factory()->create([
+         'email' => 'test@example.com',
         ]);
 
-        // Public projects to Test User 1
-        \App\Models\Project::factory()->create([]);
-        \App\Models\Project::factory()->create([]);
+        Workspace::factory(3)->create();
+        // Populate the user workspace pivot table
 
-         // Public project to Test User 2
-        \App\Models\Project::factory()->create([
-            'user_id' => 2,
-        ]);
+        $workspaces = Workspace::all();
 
-        // Private project to Test User 2
-        \App\Models\Project::factory()->create([
-            'user_id' => 2,
-            'is_public' => false,
-        ]);
+        User::all()->each(function ($user) use ($workspaces) {
+            $user->workspaces()->attach(
+                $workspaces->random(rand(1, 3))->pluck('id')->toArray()
+            );
+        });
     }
 }

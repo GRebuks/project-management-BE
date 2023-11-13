@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\BoardController;
-use App\Http\Controllers\Api\ProjectController;
+use App\Http\Controllers\Api\WorkspaceController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -19,21 +19,31 @@ Route::group([
     'middleware' => ['auth:sanctum'],
 ], function () {
 
-    // Checks if user is authorized to access the specified project.
-    // Only checks if the URI contains '{project}', otherwise the user is authorized to access the resource.
-    Route::middleware(['project.owner'])->group(function () {
+    // Workspaces API resource & routes
+    Route::group([
+        'middleware' => 'workspace.board'
+    ], function () {
+        Route::prefix('/workspaces/{workspace}')->group(function () {
+            Route::apiResource('boards', BoardController::class);
+            Route::prefix('/boards/{board}')->group(function () {
 
-        // Projects API resource & routes
-        Route::apiResource('projects', ProjectController::class);
-        Route::get('/users/{user_id}/projects', [ProjectController::class, 'getUserProjects']);
-        Route::get('/public-projects', [ProjectController::class, 'allPublicProjects']);
+                Route::post('/columns', [BoardController::class, 'storeBoardColumn']);
+                Route::patch('/columns/{boardColumn}', [BoardController::class, 'updateBoardColumn']);
+                Route::delete('/columns/{boardColumn}', [BoardController::class, 'destroyBoardColumn']);
 
-        // Boards API resource & routes
-        Route::middleware(['project.board'])->group(function () {
-            Route::prefix('/projects/{project}')->group(function () {
-                Route::apiResource('boards', BoardController::class);
+                Route::prefix('/columns/{boardColumn}')->group(function () {
+                    Route::post('/tasks', [BoardController::class, 'storeTask']);
+                    Route::patch('/tasks/{task}', [BoardController::class, 'updateTask']);
+                    Route::delete('/tasks/{task}', [BoardController::class, 'destroyTask']);
+                });
             });
         });
+    });
+
+    Route::group([
+        'middleware' => 'workspace.user'
+    ], function () {
+        Route::apiResource('workspaces', WorkspaceController::class);
     });
 
     // Auth check

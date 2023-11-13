@@ -5,9 +5,9 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Project>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Workspace>
  */
-class ProjectFactory extends Factory
+class WorkspaceFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -17,10 +17,9 @@ class ProjectFactory extends Factory
     public function definition(): array
     {
         return [
-            'title' => fake()->name(),
+            'title' => fake()->userName(),
             'description' => fake()->text(),
-            'user_id' => 1,
-            'is_public' => true,
+            'color' => fake()->hexColor(),
         ];
     }
 }

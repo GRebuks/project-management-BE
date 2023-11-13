@@ -7,24 +7,21 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Project extends Model
+class BoardColumn extends Model
 {
     use HasFactory;
-
     protected $fillable = [
         'title',
-        'description',
-        'user_id',
-        'is_public',
+        'order',
+        'board_id',
     ];
 
-    public function user(): BelongsTo
+    public function board(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Board::class);
     }
-
-    public function boards(): HasMany
+    public function tasks(): HasMany
     {
-        return $this->hasMany(Board::class);
+        return $this->hasMany(Task::class);
     }
 }

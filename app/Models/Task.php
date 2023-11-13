@@ -5,25 +5,24 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class Board extends Model
+class Task extends Model
 {
     use HasFactory;
     protected $fillable = [
         'title',
         'description',
         'color',
-        'workspace_id',
+        'board_column_id',
     ];
 
-    public function workspace(): BelongsTo
+    public function boardColumn(): BelongsTo
     {
-        return $this->belongsTo(Workspace::class);
+        return $this->belongsTo(BoardColumn::class);
     }
-
-    public function boardColumns(): HasMany
+    public function users(): BelongsToMany
     {
-        return $this->hasMany(BoardColumn::class);
+        return $this->belongsToMany(User::class, 'task_user');
     }
 }
