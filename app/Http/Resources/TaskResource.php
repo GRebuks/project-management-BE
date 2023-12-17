@@ -20,6 +20,7 @@ class TaskResource extends JsonResource
             'description' => $this->description,
             'color' => $this->color,
             'created_at' => $this->created_at,
+            'board_column_id' => $this->board_column_id,
         ];
     }
 }
