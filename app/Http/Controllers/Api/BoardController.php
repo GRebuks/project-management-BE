@@ -5,12 +5,15 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\BoardColumnRequest;
 use App\Http\Requests\BoardRequest;
+use App\Http\Requests\CommentRequest;
 use App\Http\Requests\TaskRequest;
 use App\Http\Resources\BoardColumnResource;
 use App\Http\Resources\BoardResource;
+use App\Http\Resources\CommentResource;
 use App\Http\Resources\TaskResource;
 use App\Models\Board;
 use App\Models\BoardColumn;
+use App\Models\Comment;
 use App\Models\Task;
 use App\Models\Workspace;
 use Illuminate\Http\Request;
@@ -99,6 +102,29 @@ class BoardController extends Controller
     public function destroyTask(Workspace $workspace, Board $board, BoardColumn $boardColumn, Task $task)
     {
         $task->delete();
+        return response()->json(status:204);
+    }
+
+    // COMMENTS
+    public function storeComment(CommentRequest $request, Workspace $workspace, Board $board, BoardColumn $boardColumn, Task $task)
+    {
+        $validated = $request->validated();
+        $validated['task_id'] = $task->id;
+        $validated['user_id'] = auth()->id();
+        $comment = Comment::create($validated);
+        return new CommentResource($comment);
+    }
+
+    public function updateComment(CommentRequest $request, Workspace $workspace, Board $board, BoardColumn $boardColumn, Task $task, Comment $comment)
+    {
+        $validated = $request->validated();
+        $comment->update($validated);
+        return new CommentResource($comment);
+    }
+
+    public function destroyComment(Workspace $workspace, Board $board, BoardColumn $boardColumn, Task $task, Comment $comment)
+    {
+        $comment->delete();
         return response()->json(status:204);
     }
 

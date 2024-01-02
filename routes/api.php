@@ -35,6 +35,12 @@ Route::group([
                     Route::post('/tasks', [BoardController::class, 'storeTask']);
                     Route::patch('/tasks/{task}', [BoardController::class, 'updateTask']);
                     Route::delete('/tasks/{task}', [BoardController::class, 'destroyTask']);
+
+                    Route::prefix('/tasks/{task}')->group(function () {
+                        Route::post('/comments', [BoardController::class, 'storeComment']);
+                        Route::patch('/comments/{comment}', [BoardController::class, 'updateComment']);
+                        Route::delete('/comments/{comment}', [BoardController::class, 'destroyComment']);
+                    });
                 });
             });
         });
