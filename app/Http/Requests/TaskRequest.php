@@ -25,6 +25,10 @@ class TaskRequest extends FormRequest
             'title' => 'required',
             'description' => '',
             'color' => '',
+            'board_column_id' => '',
+            'order' => '',
+            'due_date' => '',
+            'completed' => '',
         ];
     }
 }

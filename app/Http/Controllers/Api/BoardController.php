@@ -17,6 +17,7 @@ use App\Models\Comment;
 use App\Models\Task;
 use App\Models\Workspace;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class BoardController extends Controller
 {
@@ -128,4 +129,39 @@ class BoardController extends Controller
         return response()->json(status:204);
     }
 
+    public function saveBoardChanges($boardId)
+    {
+        $board = Board::with('boardColumns.tasks')->findOrFail($boardId);
+        $requestData = request()->all()['data'];
+        //$board->update($requestData['board']);
+
+        // Loop through columns and update attributes
+        foreach ($requestData['columns'] as $columnData) {
+            $column = $board->boardColumns()->find($columnData['id']);
+            $column->update($columnData);
+
+            // Loop through tasks and update attributes
+            foreach ($columnData['tasks'] as $taskData) {
+                $task = $column->tasks()->find($taskData['id']);
+                $task->order = $taskData['order'];
+                $task->update($taskData);
+            }
+        }
+
+        // You can return a response indicating success if needed
+        return response()->json(['message' => 'Board changes saved successfully']);
+    }
+
+    public function updateColumnPositions($boardId, $columnData)
+    {
+        $columnIds = collect($columnData)->pluck('id')->toArray();
+
+        // Update the order attribute for columns
+        DB::table('columns')
+            ->whereIn('id', $columnIds)
+            ->update(['order' => DB::raw('FIND_IN_SET(id, ?)'), 'updated_at' => now()], [implode(',', $columnIds)]);
+
+        // Optionally, return a response or perform additional actions
+        return response()->json(['message' => 'Column positions updated successfully']);
+    }
 }

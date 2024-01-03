@@ -16,7 +16,19 @@ class Task extends Model
         'description',
         'color',
         'board_column_id',
+        'order',
+        'due_date',
+        'completed',
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            $model->order = self::where('board_column_id', $model->board_column_id)->max('order') + 1;
+        });
+    }
 
     public function boardColumn(): BelongsTo
     {

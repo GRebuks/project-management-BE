@@ -19,7 +19,7 @@ class BoardResource extends JsonResource
             'title' => $this->title,
             'description' => $this->description,
             'color' => $this->color,
-            'columns' => BoardColumnResource::collection($this->boardColumns),
+            'columns' => BoardColumnResource::collection($this->boardColumns->sortBy('order')),
         ];
     }
 }

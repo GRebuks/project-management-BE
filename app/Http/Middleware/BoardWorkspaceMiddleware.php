@@ -2,6 +2,8 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Board;
+use App\Models\Workspace;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -20,9 +22,20 @@ class BoardWorkspaceMiddleware
             return $next($request);
 
         $board = $request->route('board');
+        if (is_string($board)) {
+            $boardId = (int)$board;
+            $board = Board::find($boardId);
+        }
+
         $workspace = $board->workspace;
 
-        if($request->route('workspace')->id !== $workspace->id
+        $routeWorkspace = $request->route('workspace');
+        if (is_string($routeWorkspace)) {
+            $workspaceId = (int)$routeWorkspace;
+            $routeWorkspace = Workspace::find($workspaceId);
+        }
+
+        if($routeWorkspace->id !== $workspace->id
         || !$workspace->users->pluck('id')->contains(auth()->id())) {
             return response()->json([
                 'message' => 'Unauthorized',

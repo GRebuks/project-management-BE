@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('board_columns', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->string('order')->default(0);
+            $table->integer('order')->default(0);
             $table->foreignId('board_id')->constrained();
             $table->timestamps();
         });

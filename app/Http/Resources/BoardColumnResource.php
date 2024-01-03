@@ -18,7 +18,7 @@ class BoardColumnResource extends JsonResource
             'id' => $this->id,
             'title' => $this->title,
             'order' => $this->order,
-            'tasks' => TaskResource::collection($this->tasks)
+            'tasks' => TaskResource::collection($this->tasks->sortBy('order'))
         ];
     }
 }

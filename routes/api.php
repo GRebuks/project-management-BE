@@ -27,6 +27,7 @@ Route::group([
             Route::apiResource('boards', BoardController::class);
             Route::prefix('/boards/{board}')->group(function () {
 
+                Route::post('/save', [BoardController::class, 'saveBoardChanges']);
                 Route::post('/columns', [BoardController::class, 'storeBoardColumn']);
                 Route::patch('/columns/{boardColumn}', [BoardController::class, 'updateBoardColumn']);
                 Route::delete('/columns/{boardColumn}', [BoardController::class, 'destroyBoardColumn']);
