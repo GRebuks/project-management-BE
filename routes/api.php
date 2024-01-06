@@ -28,6 +28,8 @@ Route::group([
             Route::prefix('/boards/{board}')->group(function () {
 
                 Route::post('/save', [BoardController::class, 'saveBoardChanges']);
+                Route::post('/reorder', [BoardController::class, 'reorderTask']);
+
                 Route::post('/columns', [BoardController::class, 'storeBoardColumn']);
                 Route::patch('/columns/{boardColumn}', [BoardController::class, 'updateBoardColumn']);
                 Route::delete('/columns/{boardColumn}', [BoardController::class, 'destroyBoardColumn']);

@@ -152,6 +152,18 @@ class BoardController extends Controller
         return response()->json(['message' => 'Board changes saved successfully']);
     }
 
+    public function reorderTask(Request $request) {
+        try {
+            $task = Task::findOrFail($request->taskId);
+            $task->board_column_id = $request->newColumnId;
+            $task->save();
+
+            return response()->json(['message' => 'Task updated successfully']);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Error updating task'], 500);
+        }
+    }
+
     public function updateColumnPositions($boardId, $columnData)
     {
         $columnIds = collect($columnData)->pluck('id')->toArray();
