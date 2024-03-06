@@ -59,4 +59,14 @@ class User extends Authenticatable
     {
         return $this->hasMany(Comment::class);
     }
+
+    public function friends(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'friends', 'user_id_1', 'user_id_2')->withPivot('status');
+    }
+
+    public function notifications(): HasMany
+    {
+        return $this->hasMany(Notification::class);
+    }
 }

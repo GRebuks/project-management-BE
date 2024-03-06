@@ -23,6 +23,13 @@ Route::group([
     Route::group([
         'middleware' => 'workspace.board'
     ], function () {
+
+        // Friend request routes
+        Route::post('/friend-request/{user}', 'FriendController@sendFriendRequest');
+        Route::post('/friend-request/{user}/accept', 'FriendController@acceptFriendRequest');
+        Route::post('/friend-request/{user}/reject', 'FriendController@rejectFriendRequest');
+        Route::post('/friend-request/{user}/break', 'FriendController@breakFriendRequest');
+
         Route::prefix('/workspaces/{workspace}')->group(function () {
             Route::apiResource('boards', BoardController::class);
             Route::prefix('/boards/{board}')->group(function () {
