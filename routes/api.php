@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\BoardController;
+use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\WorkspaceController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -25,10 +26,10 @@ Route::group([
     ], function () {
 
         // Friend request routes
-        Route::post('/friend-request/{user}', 'FriendController@sendFriendRequest');
-        Route::post('/friend-request/{user}/accept', 'FriendController@acceptFriendRequest');
-        Route::post('/friend-request/{user}/reject', 'FriendController@rejectFriendRequest');
-        Route::post('/friend-request/{user}/break', 'FriendController@breakFriendRequest');
+        Route::post('/friend-request/{user}', [UserController::class, 'sendFriendRequest']);
+        Route::post('/friend-request/{user}/accept', [UserController::class, 'acceptFriendRequest']);
+        Route::post('/friend-request/{user}/reject', [UserController::class, 'rejectFriendRequest']);
+        Route::post('/friend-request/{user}/break', [UserController::class, 'breakFriendRequest']);
 
         Route::prefix('/workspaces/{workspace}')->group(function () {
             Route::apiResource('boards', BoardController::class);
