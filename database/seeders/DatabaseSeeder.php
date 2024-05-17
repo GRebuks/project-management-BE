@@ -14,6 +14,11 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        $this->call([
+            RolesSeeder::class,
+        ]);
+
+        $ownerRoleId = 1;
         // \App\Models\User::factory(10)->create();
 
         User::factory()->create([
@@ -25,9 +30,10 @@ class DatabaseSeeder extends Seeder
 
         $workspaces = Workspace::all();
 
-        User::all()->each(function ($user) use ($workspaces) {
+        User::all()->each(function ($user) use ($ownerRoleId, $workspaces) {
             $user->workspaces()->attach(
-                $workspaces->random(rand(1, 3))->pluck('id')->toArray()
+                $workspaces->random(rand(1, 3))->pluck('id')->toArray(),
+                ['role_id' => $ownerRoleId]
             );
         });
     }

@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('user_workspace', function (Blueprint $table) {
             $table->foreignId('user_id')->constrained();
             $table->foreignId('workspace_id')->constrained();
-            // Kadu dienu safixos
-            //$table->foreignId('role_id')->constrained();
+            $table->foreignId('role_id')->constrained();
+            $table->timestamps();
         });
     }
 

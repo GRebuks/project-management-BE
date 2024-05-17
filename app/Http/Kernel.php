@@ -3,6 +3,7 @@
 namespace App\Http;
 
 use App\Http\Middleware\BoardWorkspaceMiddleware;
+use App\Http\Middleware\ExposeHeaders;
 use App\Http\Middleware\ProjectBoardMiddleware;
 use App\Http\Middleware\ProjectOwnershipMiddleware;
 use App\Http\Middleware\WorkspaceMiddleware;
@@ -27,6 +28,7 @@ class Kernel extends HttpKernel
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
         BoardWorkspaceMiddleware::class,
         WorkspaceMiddleware::class,
+        ExposeHeaders::class,
     ];
 
     /**

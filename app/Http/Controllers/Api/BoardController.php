@@ -45,7 +45,14 @@ class BoardController extends Controller
      */
     public function show(Workspace $workspace, Board $board)
     {
-        return new BoardResource($board);
+        $boardResource = new BoardResource($board);
+        $boardData = $boardResource->toArray(request());
+        $etag = md5(json_encode($boardData));
+        if (request()->header('If-None-Match') === $etag) {
+            return response()->json([], 304);
+        }
+        return response()->json(['data' => new BoardResource($board), "etag" => $etag])->header('ETag', $etag);
+        //return new BoardResource($board);
     }
 
     /**
@@ -129,22 +136,26 @@ class BoardController extends Controller
         return response()->json(status:204);
     }
 
-    public function saveBoardChanges($boardId)
+    public function saveBoardChanges(string $workspaceId, string $boardId)
     {
         $board = Board::with('boardColumns.tasks')->findOrFail($boardId);
         $requestData = request()->all()['data'];
         //$board->update($requestData['board']);
 
         // Loop through columns and update attributes
-        foreach ($requestData['columns'] as $columnData) {
-            $column = $board->boardColumns()->find($columnData['id']);
-            $column->update($columnData);
+        if ($requestData['columns']) {
+            foreach ($requestData['columns'] as $columnData) {
+                $column = $board->boardColumns()->find($columnData['id']);
+                $column->update($columnData);
 
-            // Loop through tasks and update attributes
-            foreach ($columnData['tasks'] as $taskData) {
-                $task = $column->tasks()->find($taskData['id']);
-                $task->order = $taskData['order'];
-                $task->update($taskData);
+                if ($columnData['tasks']) {
+                    // Loop through tasks and update attributes
+                    foreach ($columnData['tasks'] as $taskData) {
+                        $task = $column->tasks()->find($taskData['id']);
+                        $task->order = $taskData['order'];
+                        $task->update($taskData);
+                    }
+                }
             }
         }
 

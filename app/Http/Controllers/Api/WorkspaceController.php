@@ -25,8 +25,9 @@ class WorkspaceController extends Controller
      */
     public function store(WorkspaceRequest $request)
     {
+        $ownerRoleId = 1;
         $workspace = Workspace::create($request->validated());
-        $workspace->users()->attach(Auth::id());
+        $workspace->users()->attach(Auth::id(), ['role_id' => $ownerRoleId]);
         return new WorkspaceResource($workspace);
     }
 
