@@ -139,7 +139,9 @@ class BoardController extends Controller
     public function saveBoardChanges(string $workspaceId, string $boardId)
     {
         $board = Board::with('boardColumns.tasks')->findOrFail($boardId);
-        $requestData = request()->all()['data'];
+        $request = request()->all();
+        if(!isset($request['data'])) return response()->json(['message' => 'Board changes were not saved']);
+        $requestData = $request['data'];
         //$board->update($requestData['board']);
 
         // Loop through columns and update attributes

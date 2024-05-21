@@ -20,6 +20,11 @@ Route::group([
     'middleware' => ['auth:sanctum'],
 ], function () {
 
+    // Search routes
+    Route::get('/users/search', [UserController::class, 'searchAllExceptLoggedIn']);
+    Route::get('/workspaces/{workspace}/participants', [UserController::class, 'searchWorkspaceParticipants']);
+    Route::get('/workspaces/{workspace}/search-excluding-logged-in', [UserController::class, 'searchWorkspaceParticipantsExcludingLoggedIn']);
+
     // Workspaces API resource & routes
     Route::group([
         'middleware' => 'workspace.board'
