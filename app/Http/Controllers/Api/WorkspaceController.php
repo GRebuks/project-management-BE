@@ -58,4 +58,30 @@ class WorkspaceController extends Controller
         $workspace->delete();
         return response()->json(status:204);
     }
+
+    public function addParticipant(Workspace $workspace, Request $request) {
+        $validated = $request->validate([
+            'user_id' => 'required|integer|exists:users,id'
+        ]);
+
+        if ($workspace->users()->where('user_id', $validated['user_id'])->exists()) {
+            return response()->json(['message' => 'User is already participating in this workspace'], 409);
+        }
+
+        $workspace->users()->attach($validated['user_id'], ['role_id' => 2]);
+        return response()->json();
+    }
+    public function removeParticipant(Workspace $workspace, Request $request) {
+        $validated = $request->validate([
+            'user_id' => 'required|integer|exists:users,id'
+        ]);
+
+        if ($workspace->users()->where('user_id', $validated['user_id'])->exists()) {
+            $workspace->users()->detach($validated['user_id']);
+            return response()->json();
+        }
+
+        return response()->json(['message' => 'User isn\'t participating in this workspace'], 409);
+
+    }
 }

@@ -25,6 +25,7 @@ class TaskResource extends JsonResource
             'due_date' => $this->due_date,
             'completed' => $this->completed,
             'comments' => CommentResource::collection($this->comments->sortByDesc('created_at')),
+            'participants' => TaskParticipantResource::collection($this->users),
         ];
     }
 }

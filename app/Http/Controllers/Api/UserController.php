@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\PreferenceResource;
 use App\Http\Resources\UserSearchResource;
 use App\Http\Resources\WorkspaceUserResource;
 use App\Models\User;
@@ -108,5 +109,49 @@ class UserController extends Controller
         return WorkspaceUserResource::collection($users->map(function ($user) use ($workspace) {
             return new WorkspaceUserResource($user, $workspace->id);
         }));
+    }
+
+    // Search all except logged in and workspace participants
+    public function searchAllExceptLoggedInAndWorkspaceParticipants(Workspace $workspace, Request $request)
+    {
+        $query = $request->input('q');
+        $loggedInUserId = Auth::id();
+
+        if (!$query) {
+            return response()->json([]);
+        }
+
+        $workspaceParticipantIds = $workspace->users()->pluck('id')->toArray();
+
+        $users = User::where('username', 'like', '%' . $query . '%')
+            ->where('id', '!=', $loggedInUserId)
+            ->whereNotIn('id', $workspaceParticipantIds)
+            ->get();
+
+        return UserSearchResource::collection($users);
+    }
+
+    public function getPreferences() {
+        if (auth()->user()->preference) {
+            return new PreferenceResource(auth()->user()->preference);
+        }
+
+        return new PreferenceResource([
+            'primary' => '',
+            'secondary' => '',
+        ]);
+    }
+
+    public function setPreferences(Request $request)
+    {
+        $validated = $request->validate([
+            'primary' => 'string|nullable',
+            'secondary' => 'string|nullable',
+        ]);
+        auth()->user()->preference()->updateOrCreate(
+            [],
+            $validated,
+        );
+        return response()->noContent();
     }
 }

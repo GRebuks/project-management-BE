@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\BoardController;
+use App\Http\Controllers\Api\TaskController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\WorkspaceController;
 use Illuminate\Http\Request;
@@ -22,6 +23,7 @@ Route::group([
 
     // Search routes
     Route::get('/users/search', [UserController::class, 'searchAllExceptLoggedIn']);
+    Route::get('/workspaces/{workspace}/nonparticipants', [UserController::class, 'searchAllExceptLoggedInAndWorkspaceParticipants']);
     Route::get('/workspaces/{workspace}/participants', [UserController::class, 'searchWorkspaceParticipants']);
     Route::get('/workspaces/{workspace}/search-excluding-logged-in', [UserController::class, 'searchWorkspaceParticipantsExcludingLoggedIn']);
 
@@ -37,6 +39,8 @@ Route::group([
         Route::post('/friend-request/{user}/break', [UserController::class, 'breakFriendRequest']);
 
         Route::prefix('/workspaces/{workspace}')->group(function () {
+            Route::post('/participants/add', [WorkspaceController::class, 'addParticipant']);
+            Route::post('/participants/remove', [WorkspaceController::class, 'removeParticipant']);
             Route::apiResource('boards', BoardController::class);
             Route::prefix('/boards/{board}')->group(function () {
 
@@ -59,6 +63,14 @@ Route::group([
                     });
                 });
             });
+        });
+        Route::prefix('/tasks/{task}')->group(function () {
+            Route::post('/participants/add', [TaskController::class, 'addParticipant']);
+            Route::post('/participants/remove', [TaskController::class, 'removeParticipant']);
+        });
+        Route::prefix('/user')->group(function () {
+            Route::get('/preferences', [UserController::class, 'getPreferences']);
+            Route::post('/preferences', [UserController::class, 'setPreferences']);
         });
     });
 
