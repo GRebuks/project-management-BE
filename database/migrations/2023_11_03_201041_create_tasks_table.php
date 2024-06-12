@@ -19,7 +19,7 @@ return new class extends Migration
             $table->integer('order')->default(0);
             $table->dateTime('due_date')->nullable();
             $table->boolean('completed')->default(false);
-            $table->foreignId('board_column_id')->constrained();
+            $table->foreignId('board_column_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
     }
