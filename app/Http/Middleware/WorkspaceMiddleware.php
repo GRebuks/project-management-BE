@@ -15,6 +15,7 @@ class WorkspaceMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
+        return $next($request);
         if(!$request->route('workspace'))
             return $next($request);
 

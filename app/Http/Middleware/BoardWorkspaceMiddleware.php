@@ -18,6 +18,7 @@ class BoardWorkspaceMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
+        return $next($request);
         if(!$request->route('board'))
             return $next($request);
 
